@@ -6,6 +6,7 @@ const ctx    = canvas.getContext("2d");
 
 console.log("Game is Loading, hold up!")
 const data = await Load();
+const ENTITY_LIST = [];
 
 const fps = 1/60;
 const Gravity = 1/3;
@@ -32,9 +33,8 @@ function PlayerSprite(player, sw, sh, w, h, hitbox, drawHitBox) {
         if(this.attacking) this.CurrentAnimation = "Attack1";
         this.time += fps;
         
-        if(player == "dummy")console.log(this.CurrentFrame >= this.sprites[this.CurrentAnimation].totalFrames-1)
         if(this.CurrentFrame >= this.sprites[this.CurrentAnimation].totalFrames-1 && this.attacking) {
-            this.attacking = false;
+                this.attacking = false;
             this.CurrentFrame = 0;
         }
         if(this.CurrentFrame >= this.sprites[this.CurrentAnimation].totalFrames-1) this.CurrentFrame = 0;
@@ -46,7 +46,7 @@ function PlayerSprite(player, sw, sh, w, h, hitbox, drawHitBox) {
             position.x - (this.spriteWidth/2), position.y - (this.spriteHeight/2),
             this.width, this.height
         )
-        if(drawHitBox) ctx.fillRect(position.x - (this.spriteWidth/2), position.y - (this.spriteHeight/2), hitbox.width, hitbox.height)
+        if(drawHitBox) ctx.fillRect(position.x - (hitbox.width/2), position.y - (hitbox.height/2), hitbox.width, hitbox.height)
         if(this.time < this.sprites[this.CurrentAnimation].speed) return;
 
         this.CurrentFrame++;
@@ -99,6 +99,7 @@ function Player({
                 }
             };
         }
+        ENTITY_LIST.push(this);
     })()
 
     this.Update = () => {
@@ -123,12 +124,13 @@ function Player({
 function Object({
     position,
     sprite,
-    tile = [{x: 0, y: 0}]
+    tile = [{x: 0, y: 0}],
 }){
     this.position = position;
     this.tile = tile;
     this.width = sprite.src.width*ratio(sprite.src);
     this.height = sprite.src.height*ratio(sprite.src);
+
     this.Draw = () => {
         for (let i = 0; i < this.tile.length; i++) {
             ctx.drawImage(sprite.src,
@@ -141,14 +143,22 @@ function Object({
 }
 
 function Movement() {
+    this.attackDelay = false;
+
     this.Update = () => {
         if(this.parent.player == "player1") {
-            if(InputManager.GetKey(" ") && !this.parent.sprite.attacking) {
+            if(InputManager.GetKey(" ") && !this.parent.sprite.attacking && !this.attackDelay) {
                 this.parent.sprite.attacking = true;
+                this.attackDelay = true
                 this.parent.sprite.CurrentFrame = 0;
+                setTimeout(() => {
+                    this.attackDelay = false
+                }, 700)
             }
 
-            if(this.parent.velocity.y > 0) {
+            if(this.parent.velocity.y < 0) {
+                this.parent.sprite.ChangeSprite("Jump")
+            }else if(this.parent.velocity.y > 0) {
                 this.parent.sprite.ChangeSprite("Fall")
                 if(!this.parent.sprite.attacking) this.parent.sprite.CurrentFrame = 0;
             }else if(InputManager.AxisX != 0) {
@@ -179,7 +189,10 @@ const Player1 = new Player({
     },
     player: "player1",
     scripts: [new Movement()],
-    drawHitBox: true
+    playerHitBox: {
+        width: 25,
+        height: 50
+    }
 })
 
 const dummy = new Player({
@@ -193,7 +206,7 @@ const dummy = new Player({
     width: 32,
     height: 32,
     playerHitBox: {
-        width: 32,
+        width: 20,
         height: 32
     }
 })
@@ -209,4 +222,4 @@ function Init() {
 }
 Init()
 
-console.log(data, Player1, dummy)
+console.log(data, Player1, dummy, ENTITY_LIST)
