@@ -1,0 +1,12 @@
+{
+    "Hit": {
+        "totalFrames": 4,
+        "speed": 0.07,
+        "src": "/hit.png"
+    },
+    "Idle": {
+        "totalFrames": 1,
+        "speed": 0.07,
+        "src": "/idle.png"
+    }
+}

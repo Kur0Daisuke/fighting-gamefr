@@ -1,0 +1,43 @@
+{
+    "Attack1": {
+        "totalFrames": 4,
+        "speed": 0.07,
+        "src": "/Attack1.png"
+    },
+    "Attack2": {
+        "totalFrames": 4,
+        "speed": 0.07,
+        "src": "/Attack2.png"
+    },
+    "Death": {
+        "totalFrames": 7,
+        "speed": 0.07,
+        "src": "/Death.png"
+    },
+    "Fall": {
+        "totalFrames": 2,
+        "speed": 0.07,
+        "src": "/Fall.png"
+    },
+    "Idle": {
+        "totalFrames": 4,
+        "speed": 0.07,
+        "src": "/Idle.png"
+    },
+    "Jump": {
+        "totalFrames": 2,
+        "speed": 0.07,
+        "src": "/Jump.png"
+    },
+    "Run": {
+        "totalFrames": 8,
+        "speed": 0.07,
+        "src": "/Run.png"
+    },
+    "TakeHit": {
+        "totalFrames": 3,
+        "speed": 0.07,
+        "src": "/TakeHit.png"
+    }
+
+}
